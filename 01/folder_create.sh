@@ -11,13 +11,11 @@ name_gen() {
     # Генерация целевой длины строки от 4 до 7 символов
     local target_length=$(($RANDOM % 4 + 4))
 
-    # Гарантируем, что каждый символ используется по крайней мере один раз, если длина алфавита меньше целевой длины
     local min_length=$((alphabet_length < target_length ? alphabet_length : target_length))
     for ((i=0; i < min_length; i++)); do
         string+=${alphabet:$i:1}
     done
 
-    # Дополняем строку до целевой длины, выбирая случайные символы из алфавита
     while [ ${#string} -lt $target_length ]; do
         local random_char=${alphabet:$((RANDOM % alphabet_length)):1}
         string+="$random_char"
@@ -30,10 +28,8 @@ name_gen() {
 
 check_free_space() {
     local path=$1
-    # Получаем свободное место для указанного пути в гигабайтах
     local free_space_gb=$(df "$path" | awk 'NR==2 {print $4}' | awk '{print $1/1024/1024}')
 
-    # Сравниваем, если свободного места меньше 1 Гб, выводим сообщение и выходим из скрипта
     if [[ -n "$free_space_gb" ]] && [[ "$free_space_gb" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
     compare_result=$(printf "%.0f\n" "$free_space_gb" | bc -l)
     	if [[ $compare_result -lt 1 ]]; then

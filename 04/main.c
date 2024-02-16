@@ -56,19 +56,15 @@ void get_time(char* time_str, int index, int day_offset) {
     time_t baseTime = time(NULL);
     struct tm *now = localtime(&baseTime);
 
-    // Устанавливаем время в начало дня и добавляем смещение в днях
     now->tm_hour = 0;
     now->tm_min = 0;
     now->tm_sec = 0;
-    now->tm_mday += day_offset; // Добавляем смещение дней для каждого файла лога
+    now->tm_mday += day_offset; 
 
-    // Добавляем минуты для разнообразия записей внутри одного дня
     now->tm_min = index;
 
-    // Конвертируем измененное время обратно в формат времени
     mktime(now);
 
-    // Форматируем время в формате логов nginx
     strftime(time_str, 30, "%d/%b/%Y:%H:%M:%S %z", now);
 }
 
@@ -78,8 +74,8 @@ int main() {
 
     for (int day = 0; day < 5; day++) {
         char filename[25];
-        sprintf(filename, "log_day_%d.log", day + 1); // Создаем имя файла для каждого дня
-        FILE *file = fopen(filename, "w+"); // Открываем файл для записи
+        sprintf(filename, "log_day_%d.log", day + 1); 
+        FILE *file = fopen(filename, "w+"); 
 
         if (file == NULL) {
             perror("Error opening file");
@@ -98,16 +94,16 @@ int main() {
             ip_gen(ip_str);
             response_gen(response);
             method_gen(method);
-            get_time(time, i, day); // Добавляем смещение в днях для каждого файла лога
+            get_time(time, i, day); 
             url_gen(url); // URL запроса
             agent_gen(agent);
             body_bytes_sent = rand() % 5000 + 100; // Примерный размер тела ответа
 
             fprintf(file, "%s - - [%s] \"%s %s HTTP/1.1\" %s %d \"%s\" \"%s\"\n",
-                    ip_str, time, method, url, response, body_bytes_sent, "-", agent); // Используем "-" для referer, если он неизвестен
+                    ip_str, time, method, url, response, body_bytes_sent, "-", agent); 
         }
 
-        fclose(file); // Закрываем файл после записи
+        fclose(file); 
     }
 
     return 0;

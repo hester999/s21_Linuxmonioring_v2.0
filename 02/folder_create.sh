@@ -25,21 +25,16 @@ name_gen() {
 
 
 check_free_space() {
-    # Получаем свободное место для корневого пути в человекочитаемом формате (гигабайты, мегабайты и т.д.)
     local free_space=$(df -h / | awk 'NR==2 {print $(NF-2)}')
 
-    # Логирование текущего свободного места для отладки
   
 
-    # Извлекаем число и единицу измерения (G, M)
     local free_space_value=$(echo $free_space | sed -e 's/[A-Za-z]//g')
     local free_space_unit=$(echo $free_space | sed -e 's/[0-9.]//g')
 
-    # Если единица измерения - гигабайты (G) и свободное место меньше 1, прекращаем выполнение
     if [[ "$free_space_unit" == "G" ]] && (( $(echo "$free_space_value < 1" | bc -l) )); then
         echo "Error: Less than 1 GB of free space on root partition."
         exit 3
-    # Если единица измерения - мегабайты (M) или килобайты (K), прекращаем выполнение
     elif [[ "$free_space_unit" == "M" ]] || [[ "$free_space_unit" == "K" ]]; then
         echo "Error: Critically low free space on root partition."
         exit 3

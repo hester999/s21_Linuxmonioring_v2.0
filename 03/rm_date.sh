@@ -21,10 +21,8 @@ if ! end_epoch=$(date -d "$end_input" +%s 2>/dev/null); then
     exit 1
 fi
 
-# Переход в директорию ../02/
 cd ../02/ || { echo "Не удалось перейти в директорию ../02/"; exit 1; }
 
-echo "Поиск и удаление файлов в директории $(pwd), изменённых с $start_input по $end_input."
 find . ! -name "*.sh" -type f -newermt "$start_input" ! -newermt "$end_input" -exec echo Удаляется файл: {} \; -exec rm {} \;
 
 find . -depth -type d -empty -exec echo Удаляется пустая директория: {} \; -exec rmdir {} \;
